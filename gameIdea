@@ -1,0 +1,44 @@
+hereby i describe just the idea of the game
+
+
+"""
+a player is in a dungeon with three rooms. In each room
+there is a key and a portal that teleports the player to the next
+room, teleporting without taking a key is not possible, key must
+be obtained first. The player has 100 hp and can collect
+coins throughout the game. If the player loses all his
+hp (100), he dies. And is sent to the very first room to 
+restart the game. There are 4 characters in the game:
+1.  Main character - the one that the player is using
+2.  Key guardian - a character who guards the key from the 
+player, he is spawned in every room and the player neeeds
+to encounter him in order to get the key and get a pass to the
+next room. During the encounter of the main character and the 
+key guard, player's health decreases by a random value 1-100,
+the main character might die in the very first room, it is random.
+3.  The thief - the thief spawns randomly in any of the three
+rooms. He might spawn in every room, or might not spam in 
+any room. The thief's role is to steal coins from the player. The 
+coins are being stolen when the thief ends up on the same tile as 
+the main character. The thief does not appear in the start of the 
+round. He spawns randomly on some tile of the room. The amount
+of coins that he steals is random. 
+4.  The healer - the healer is spawned randomly in any
+room. He may be encountered once during the whole game. During
+an encounter with the player, the healer increases the main
+character's current health by a random number. 
+ 
+Positions of the characters:
+    Main character - is spawned in top left corner everytime
+    Key guardian - spawned in top right corner every time
+    The thief - spawned randomly on a random tile
+    The healer - spawned in 1 of 3 rooms in bottom left corner
+    The portal to the next room - bottom right corner
+
+If the player dies, the panel "You Lose" is shown
+If the player successfully completes the game, in the end of it
+the panel "You Win" with all the stats like coins, health
+and time is shown
+
+
+"""
