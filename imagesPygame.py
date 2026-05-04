@@ -15,7 +15,7 @@ w,h=600,600
 
 screen=py.display.set_mode((w,h))
 py.display.set_caption("Working with images in pygame")
-img=py.image.load("char.jpg")
+img=py.image.load("mainChar.jpg")
 img=py.transform.scale(img,(400,400))
 x,y=0,0
 clock=py.time.Clock()

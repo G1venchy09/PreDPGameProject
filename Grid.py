@@ -6,8 +6,8 @@ py.mixer.init()
 '''
 obstacle image ref = https://freesvg.org/fire-icon
 background image ref = https://www.deviantart.com/melcenage/art/1-The-Fallen-Cathedral-DnD-Background-1314006525
-char image ref = https://www.deviantart.com/tag/hollowknightfandom
-dig file ref = https://minecraft.fandom.com/wiki/Category:Sound_effects
+mainChar image ref = https://www.deviantart.com/novanim/art/Chibi-Souls-Oscar-of-Astora-616049041
+coin sound file ref = https://pixabay.com/sound-effects/search/coin/
 '''
 #in this cript we will generate n x n grid o the screen
 #our player can only move within these cells in the grid
@@ -24,17 +24,16 @@ global grid
 py.init()
  
 grid =[[randint(0,4) for i in range(col)] for j in range(row)]
-grid[0][0], grid[0][1], grid[1][0] = 1, 1, 1
+grid[0][0], grid[0][1], grid[1][0], grid[0][8], grid[8][0], grid[8][8]  = 1, 1, 1, 2, 1, 1
 for r in grid:
     print(r)
  
-char = py.image.load("char.jpg")
+char = py.image.load("mainChar.jpg")
 char = py.transform.scale(char, (50, 50))
 obstacle = py.image.load("wall.jpg")
 obstacle = py.transform.scale(obstacle, (60, 60))
 background = py.image.load("background.jpg")
 background = py.transform.scale(background,(screen_w,screen_h))
-dig = py.mixer.Sound("Sheep3.oga")
 coin_sound = py.mixer.Sound("chieuk-coin-257878.mp3")
 coinImg=py.image.load("coin(1).png")
 coinImg=py.transform.scale(coinImg,(50,50))
@@ -66,6 +65,8 @@ def drawGrid(grid:list[list]):
  
  
 coin = 0
+hp=100
+key=False
 def draw_panel(coin):
     font = py.font.SysFont(None, 30)
     py.draw.rect(screen, "#8BD0CA", (screen_w, 0, panel_w, screen_h))
@@ -82,6 +83,16 @@ def find(coin): #this will take an action based on the value in the grid when a 
             grid[r][c] = 6
             coin_sound.play()
     return coin
+
+def find(hp):
+    r=540
+    c=0
+    if event.type==py.KEYDOWN:
+        if event.key==py.K_ENTER and grid[r][c]==2:
+            hp=hp-randint(0,100)
+            key=True
+
+
 run = True
 while run:
     for event in py.event.get():
