@@ -68,19 +68,31 @@ class Obstacle:
         screen.blit(self.img,(self.x,self.y))
         # return py.draw.rect(screen,"#000000",(self.x,self.y,60,60))
 
-class Guard:
-    def __init__(self,x:int,y:int,img):
-        self.x=x
-        self.y=y
-        self.img=img
-    
-    def draw(self,screen):
-        screen.blit(self.img,(self.x,self.y))
+class Enemy:
+    """
+    Placed on the grid at (grid_row, grid_col).
+    The tile directly IN FRONT of the enemy (one cell to the left by default)
+    is the 'trap tile'.  When the player steps on it they take random HP damage,
+    the enemy vanishes and is replaced by a key on the same trap tile.
+    """
+    def __init__(self, grid_row: int, grid_col: int, img):
+        self.grid_row = grid_row
+        self.grid_col = grid_col
+        self.img = img
+        self.alive = True                       # False once the player triggers the trap
 
-    def collision(self,enemy):
-        if abs(self.x-enemy.x)<=self.w and abs(self.y-enemy.y)<=self.h:
-            if self.collide==False:
-                print("send to gulag")
-                self.collide=True
-        elif self.collide==True:
-            self.collide=False
+    # pixel position of the enemy sprite
+    @property
+    def px(self): return self.grid_col * 60
+    @property
+    def py_pos(self): return self.grid_row * 60
+
+    # the trap tile is one cell to the LEFT of the enemy
+    @property
+    def trap_row(self): return self.grid_row
+    @property
+    def trap_col(self): return self.grid_col - 1
+
+    def draw(self, screen):
+        if self.alive:
+            screen.blit(self.img, (self.px, self.py_pos))
