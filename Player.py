@@ -5,6 +5,9 @@ py.mixer.init()
 
 BLOCKED = {0, 5}
 
+moveSound=py.mixer.Sound("moveSound.mp3")
+moveSound.set_volume(0.1)
+
 class Player:
     speedX, speedY = randint(3,6), randint(1,4)
 
@@ -24,6 +27,7 @@ class Player:
         r = self.y // 60
         c = self.x // 60
         if event.type == py.KEYDOWN:
+            moveSound.play()
             if event.key == py.K_a and c-1 >= 0 and grid[r][c-1] not in BLOCKED:
                 self.x -= 60
             if event.key == py.K_d and c+1 < len(grid[0]) and grid[r][c+1] not in BLOCKED:
