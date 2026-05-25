@@ -2,6 +2,7 @@ import pygame as py
 from random import randint
 from Player import Player, Obstacle, Enemy, Friend, Sprite
 
+py.mixer.pre_init(44100, -16, 2, 512)
 py.mixer.init()
 py.init()
 
@@ -97,6 +98,19 @@ coinImg    = py.transform.scale(py.image.load("coin(1).png"),       (50, 50))
 enemyImg   = py.transform.scale(py.image.load("enemy.png"),         (50, 50))
 keyImg     = py.transform.scale(py.image.load("key.png"),           (40, 40))
 portalImg  = py.transform.scale(py.image.load("portal.png"),        (60, 60))
+healSound= py.mixer.Sound("healSound.mp3")
+keySound=py.mixer.Sound("keysound.mp3")
+# menuSound=py.mixer.music("menuSound.mp3")
+
+overSound=py.mixer.Sound("moveSound.mp3")
+fightSound=py.mixer.Sound("punchSound.mp3")
+selSound=py.mixer.Sound("selSound.mp3")
+selSound1=py.mixer.Sound("selSound1.mp3")
+telSound=py.mixer.Sound("telSound.mp3")
+vicSound=py.mixer.Sound("vicSound.mp3")
+py.mixer.music.load("backSound.mp3")
+py.mixer.music.set_volume(0.15)
+attackSound=py.mixer.Sound("attackSound.mp3")
 spriteImg  = py.transform.scale(py.image.load("sprite.png"), (50, 50))
 char1 = py.transform.scale(py.image.load("mainChar.png"),  (80, 80))
 char2 = py.transform.scale(py.image.load("mainChar2.png"), (80, 80))
@@ -190,7 +204,7 @@ def draw_character_select():
         screen.blit(img, (x, y))
 
         name_text = font_name.render(name, True, "#ffffff" if i != selected_char else "#ffd700")
-        screen.blit(name_text, name_text.get_rect(center=(x + 40, y + 110)).topleft)
+        screen.blit(name_text, name_text.get_rect(center=(x + 40, y + 130)).topleft)
 
     # Controls hint
     hint1 = font_hint.render("A / D  to browse", True, "#aaaaaa")
@@ -322,10 +336,12 @@ def check_sprite(hp):
         if not sprite_just_hit:
             hp = max(0, hp - 10)
             sprite_just_hit = True
+            attackSound.play()
             print(f"Sprite attacks! -10 HP  (HP remaining: {hp})")
             if hp <= 0:
                 global game_over
                 game_over = True
+                py.mixer.music.stop()
                 print("You died!")
     else:
         # Player moved away by at least 1 tile — reset hit flag
@@ -365,10 +381,12 @@ def check_enemy_trap(hp, has_key, portal_open,event):
                 fight_prompt_active = False
                 damage = randint(1, 100)
                 hp = max(0, hp - damage)
+                fightSound.play()
                 print(f"You fought! -{damage} HP  (HP remaining: {hp})")
 
                 if hp <= 0:
                     game_over = True
+                    py.mixer.music.stop()
                     hp = 0
                     print("You died!")
                 else:
@@ -385,6 +403,7 @@ def check_enemy_trap(hp, has_key, portal_open,event):
     if event.type == py.KEYDOWN:
         if event.key == py.K_SPACE and grid[r][c] == 7:
             grid[r][c] = 1
+            keySound.play()
             has_key = True
             print("Key collected!")
             grid[row - 1][col - 1] = 8
@@ -393,9 +412,12 @@ def check_enemy_trap(hp, has_key, portal_open,event):
 
     # Step 4: player steps on portal
     if portal_open and grid[r][c] == 8:
+        telSound.play()
         if current_room >= 2:
             global victory
             victory = True
+            py.mixer.music.stop()
+            vicSound.play()
             print("You escaped the dungeon!")
             return hp, has_key, portal_open    # ← return immediately
         else:
@@ -428,6 +450,7 @@ def check_friend(hp, event):
                 talk_prompt_active = False
                 heal = randint(1, 100 - hp)  if hp < 100 else 0
                 hp = min(100, hp + heal)
+                healSound.play()
                 print(f"Friend healed you for {heal} HP! (HP: {hp})")
                 grid[friend.grid_row][friend.grid_col] = 1   # friend disappears
                 friend.alive = False
@@ -551,6 +574,8 @@ def restart_game():
     global sprite, sprite_just_hit, sprite_move_timer
     global game_state, selected_char
 
+    game_over=False
+    victory=False
     hp                  = 100
     coin                = 0
     portal_open         = False
@@ -561,8 +586,8 @@ def restart_game():
     background          = backgrounds[0]
     friend              = None
     game_over=False
-    victory=False
     selected_char       = 0
+    py.mixer.music.stop()
     game_state          = "select"
     
 
@@ -656,18 +681,24 @@ while run:
             if event.type == py.KEYDOWN:
                 if event.key == py.K_d:
                     selected_char = (selected_char + 1) % len(characters)
+                    selSound.play()
                 if event.key == py.K_a:
                     selected_char = (selected_char - 1) % len(characters)
+                    selSound.play()
                 if event.key == py.K_RETURN:
+                    selSound1.play()
                     # Apply selected character image to player
                     p1.img = py.transform.scale(characters[selected_char], (50, 50))
                     game_state = "playing"
+                    py.mixer.music.play(-1)
 
         # ── Gameplay ──────────────────────────────────────────────
         elif game_state == "playing":
             if event.type == py.KEYDOWN:
                 if event.key == py.K_r and (game_over or victory):
                     restart_game()
+                    screen.fill("#000000")    # wipe the screen immediately
+                    py.display.flip()         # flush old frame before anything draws
                     continue
 
             if not game_over and not victory:
@@ -678,12 +709,13 @@ while run:
                 hp = check_friend(hp, event)
 
     # ── Outside event loop ────────────────────────────────────────
-    if game_state == "playing" and not game_over and not victory:
+    if not game_over and not victory and not fight_prompt_active and not talk_prompt_active:
         hp = check_sprite(hp)
 
     # ── Drawing ───────────────────────────────────────────────────
     if game_state == "select":
         draw_character_select()
+        
 
     elif game_state == "playing":
         screen.blit(background, (0, 0))
@@ -706,11 +738,20 @@ while run:
         if talk_prompt_active and not game_over:
             draw_talk_prompt()
 
-        if game_over:
+        if game_over and game_state == "playing":
             draw_game_over()
+            
 
-        if victory:
+        if victory and game_state == "playing":
             draw_victory()
+            
+
+        # Safety net — never draw game over or victory outside playing state
+        if game_state != "playing":
+            victory   = False
+            game_over = False
+            
+
 
     py.display.flip()
     clock.tick(15)
