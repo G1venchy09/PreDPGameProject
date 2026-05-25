@@ -98,6 +98,12 @@ enemyImg   = py.transform.scale(py.image.load("enemy.png"),         (50, 50))
 keyImg     = py.transform.scale(py.image.load("key.png"),           (40, 40))
 portalImg  = py.transform.scale(py.image.load("portal.png"),        (60, 60))
 spriteImg  = py.transform.scale(py.image.load("sprite.png"), (50, 50))
+char1 = py.transform.scale(py.image.load("mainChar.png"),  (80, 80))
+char2 = py.transform.scale(py.image.load("mainChar2.png"), (80, 80))
+char3 = py.transform.scale(py.image.load("mainChar3.png"), (80, 80))
+characters = [char1, char2, char3]
+char_names  = ["Knight", "Rogue", "Mage"]   
+selected_char = 0 
 
 # ── Objects ──────────────────────────────────────────────────────────
 p1 = Player(0, 0, 60, 60, char)
@@ -128,6 +134,7 @@ friend              = None       # only exists in room 2
 talk_prompt_active  = False
 game_over           = False
 victory             = False
+game_state = "select"
 
 clock = py.time.Clock()
 
@@ -155,6 +162,41 @@ def draw_panel(coin, hp, has_key):
     screen.blit(font.render(f"HP    : {hp}",   True, "#ff4444"), (screen_w + 20,  80))
     if has_key:
         screen.blit(font.render("KEY !", True, "#ffe066"), (screen_w + 20, 120))
+
+
+def draw_character_select():
+    font_title  = py.font.SysFont(None, 60)
+    font_name   = py.font.SysFont(None, 30)
+    font_hint   = py.font.SysFont(None, 25)
+
+    screen.blit(background, (0, 0))
+
+    # Title
+    title = font_title.render("Choose your character", True, "#ffd700")
+    screen.blit(title, title.get_rect(center=((screen_w + panel_w) // 2, 60)).topleft)
+
+    # Draw each character
+    spacing = (screen_w + panel_w) // (len(characters) + 1)
+    for i, (img, name) in enumerate(zip(characters, char_names)):
+        x = spacing * (i + 1) - 40
+        y = screen_h // 2 - 60
+
+        # Highlight box for selected character
+        if i == selected_char:
+            py.draw.rect(screen, "#ffd700", (x - 10, y - 10, 100, 120), border_radius=8)
+        else:
+            py.draw.rect(screen, "#333333", (x - 10, y - 10, 100, 120), border_radius=8)
+
+        screen.blit(img, (x, y))
+
+        name_text = font_name.render(name, True, "#ffffff" if i != selected_char else "#ffd700")
+        screen.blit(name_text, name_text.get_rect(center=(x + 40, y + 110)).topleft)
+
+    # Controls hint
+    hint1 = font_hint.render("A / D  to browse", True, "#aaaaaa")
+    hint2 = font_hint.render("ENTER to confirm", True, "#aaaaaa")
+    screen.blit(hint1, hint1.get_rect(center=((screen_w + panel_w) // 2, screen_h - 80)).topleft)
+    screen.blit(hint2, hint2.get_rect(center=((screen_w + panel_w) // 2, screen_h - 50)).topleft)
 
 
 def draw_fight_prompt():
@@ -507,6 +549,7 @@ def restart_game():
     global fight_prompt_active, coin, hp, game_over
     global current_room, background, friend, talk_prompt_active, victory
     global sprite, sprite_just_hit, sprite_move_timer
+    global game_state, selected_char
 
     hp                  = 100
     coin                = 0
@@ -519,6 +562,9 @@ def restart_game():
     friend              = None
     game_over=False
     victory=False
+    selected_char       = 0
+    game_state          = "select"
+    
 
     grid = [[randint(0, 4) for _ in range(col)] for _ in range(row)]
 
@@ -605,50 +651,68 @@ while run:
         if event.type == py.QUIT:
             run = False
 
-        if event.type == py.KEYDOWN:
-            if event.key == py.K_r and (game_over or victory):
-                restart_game()
-                continue
+        # ── Character selection screen ────────────────────────────
+        if game_state == "select":
+            if event.type == py.KEYDOWN:
+                if event.key == py.K_d:
+                    selected_char = (selected_char + 1) % len(characters)
+                if event.key == py.K_a:
+                    selected_char = (selected_char - 1) % len(characters)
+                if event.key == py.K_RETURN:
+                    # Apply selected character image to player
+                    p1.img = py.transform.scale(characters[selected_char], (50, 50))
+                    game_state = "playing"
 
-        if not game_over and not victory:
-            if not fight_prompt_active and not talk_prompt_active:
-                p1.move(screen, grid, event)
-                coin = find(coin, event)
-            hp, has_key, portal_open = check_enemy_trap(hp, has_key, portal_open, event)
-            hp = check_friend(hp, event)
+        # ── Gameplay ──────────────────────────────────────────────
+        elif game_state == "playing":
+            if event.type == py.KEYDOWN:
+                if event.key == py.K_r and (game_over or victory):
+                    restart_game()
+                    continue
 
-    # Outside the event loop — runs every frame regardless of input
-    if not game_over and not victory:
-        hp = check_sprite(hp)                     # ← moved here                        # ← add this
+            if not game_over and not victory:
+                if not fight_prompt_active and not talk_prompt_active:
+                    p1.move(screen, grid, event)
+                    coin = find(coin, event)
+                hp, has_key, portal_open = check_enemy_trap(hp, has_key, portal_open, event)
+                hp = check_friend(hp, event)
 
-    clock.tick(15)
+    # ── Outside event loop ────────────────────────────────────────
+    if game_state == "playing" and not game_over and not victory:
+        hp = check_sprite(hp)
 
-    screen.blit(background, (0, 0))
-    drawGrid(grid)
+    # ── Drawing ───────────────────────────────────────────────────
+    if game_state == "select":
+        draw_character_select()
 
-    if enemy.alive:
-        enemy.draw(screen)
+    elif game_state == "playing":
+        screen.blit(background, (0, 0))
+        drawGrid(grid)
 
-    if friend is not None and friend.alive:
-        friend.draw(screen)
+        if enemy.alive:
+            enemy.draw(screen)
 
-    sprite.draw(screen)                                    # ← add this
+        if friend is not None and friend.alive:
+            friend.draw(screen)
 
-    draw_panel(coin, hp, has_key)
-    p1.draw(screen)
+        sprite.draw(screen)
 
-    if fight_prompt_active and not game_over:
-        draw_fight_prompt()
+        draw_panel(coin, hp, has_key)
+        p1.draw(screen)
 
-    if talk_prompt_active and not game_over:
-        draw_talk_prompt()
+        if fight_prompt_active and not game_over:
+            draw_fight_prompt()
 
-    if game_over:
-        draw_game_over()
+        if talk_prompt_active and not game_over:
+            draw_talk_prompt()
 
-    if victory:
-        draw_victory()
+        if game_over:
+            draw_game_over()
+
+        if victory:
+            draw_victory()
 
     py.display.flip()
+    clock.tick(15)
 
 py.quit()
