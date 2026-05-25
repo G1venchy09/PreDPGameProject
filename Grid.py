@@ -652,5 +652,3 @@ while run:
     py.display.flip()
 
 py.quit()
-
-
