@@ -9,7 +9,7 @@ moveSound=py.mixer.Sound("moveSound.mp3")
 moveSound.set_volume(0.1)
 
 class Player:
-    speedX, speedY = randint(3,6), randint(1,4)
+    
 
     def __init__(self, x:int, y:int, w:int, h:int, img):
         self.x = x
@@ -40,7 +40,6 @@ class Player:
     def collision(self, enemy):
         if abs(self.x - enemy.x) <= self.w and abs(self.y - enemy.y) <= self.h:
             if self.collide == False:
-                print("send to gulag")
                 self.collide = True
         elif self.collide == True:
             self.collide = False
@@ -54,24 +53,6 @@ class Obstacle:
 
     def draw(self, screen):
         screen.blit(self.img, (self.x, self.y))
-
-
-class Guard:
-    def __init__(self, x:int, y:int, img):
-        self.x = x
-        self.y = y
-        self.img = img
-
-    def draw(self, screen):
-        screen.blit(self.img, (self.x, self.y))
-
-    def collision(self, enemy):
-        if abs(self.x - enemy.x) <= self.w and abs(self.y - enemy.y) <= self.h:
-            if self.collide == False:
-                print("send to gulag")
-                self.collide = True
-        elif self.collide == True:
-            self.collide = False
 
 
 class Enemy:
