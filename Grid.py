@@ -102,7 +102,8 @@ healSound= py.mixer.Sound("healSound.mp3")
 keySound=py.mixer.Sound("keysound.mp3")
 # menuSound=py.mixer.music("menuSound.mp3")
 
-overSound=py.mixer.Sound("moveSound.mp3")
+ovrSound=py.mixer.Sound("ovrSound.mp3")
+
 fightSound=py.mixer.Sound("punchSound.mp3")
 selSound=py.mixer.Sound("selSound.mp3")
 selSound1=py.mixer.Sound("selSound1.mp3")
@@ -342,6 +343,7 @@ def check_sprite(hp):
                 global game_over
                 game_over = True
                 py.mixer.music.stop()
+                ovrSound.play()
                 print("You died!")
     else:
         # Player moved away by at least 1 tile — reset hit flag
@@ -387,6 +389,7 @@ def check_enemy_trap(hp, has_key, portal_open,event):
                 if hp <= 0:
                     game_over = True
                     py.mixer.music.stop()
+                    ovrSound.play()
                     hp = 0
                     print("You died!")
                 else:
@@ -756,4 +759,4 @@ while run:
     py.display.flip()
     clock.tick(15)
 
-py.quit()
+py.quit() 
