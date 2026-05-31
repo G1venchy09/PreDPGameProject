@@ -37,12 +37,7 @@ class Player:
             if event.key == py.K_s and r+1 < len(grid) and grid[r+1][c] not in BLOCKED:
                 self.y += 60
 
-    def collision(self, enemy):
-        if abs(self.x - enemy.x) <= self.w and abs(self.y - enemy.y) <= self.h:
-            if self.collide == False:
-                self.collide = True
-        elif self.collide == True:
-            self.collide = False
+    
 
 
 class Obstacle:
