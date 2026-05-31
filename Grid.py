@@ -153,7 +153,7 @@ char_names  = ["Knight", "Rogue", "Mage"]
 selected_char = 0 
 
 # ── Objects ──────────────────────────────────────────────────────────
-p1 = Player(0, 0, 60, 60, char)
+p1 = Player(0, 0, char)
 
 sprite              = Sprite(0, 0, spriteImg)    # starts at hero spawn
 sprite_just_hit     = False                      # true right after collision
