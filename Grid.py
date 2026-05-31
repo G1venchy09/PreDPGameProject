@@ -84,6 +84,39 @@ for r in range(row):
 for r in grid:
     print(r)
 
+
+"""
+Reference:
+Images
+    Friend: https://www.sprite-ai.art/gallery/chibi-dark-fantasy-spell-caster-9be7
+    Wall: https://www.deviantart.com/skyshi/art/Brickwall-texture-4043871
+    Sprite: https://www.sprite-ai.art/gallery/monster-slime-boss-and-soldier-slimes-77ca
+    Coin: https://nintendo.fandom.com/wiki/Coin_(Mario)
+    Portal: https://www.pngaaa.com/detail/209690
+    Main Character 1: https://www.deviantart.com/novanim/art/Chibi-Souls-Oscar-of-Astora-616049041
+    Main Character 2: https://www.sprite-ai.art/gallery/unusual-knight-00f6
+    Main Character 3: http://deviantart.com/lycia1947/favourites/81991916/soul-knight
+    Key: https://www.clipartmax.com/middle/m2K9A0m2i8d3K9d3_download-key-picture-image-transparent-key/
+    Enemy: https://www.sprite-ai.art/gallery/generate-a-scrag-facing-the-5473
+    Background 1: https://en.ac-illust.com/clip-art/23829125/dungeon-cg_010
+    Background 2: https://gallerix.ru/storeroom/2010978547/N/1142770531/
+    Background 3: https://www.needpix.com/photo/1510921/caves-passage-cavern-dark-spooky-rocks-entrance-dungeon
+Sounds 
+    Game over: https://pixabay.com/sound-effects/musical-game-over-417465/
+    Victory: https://pixabay.com/sound-effects/film-special-effects-11l-victory-1749704548397-358776/
+    Select Character: https://pixabay.com/sound-effects/film-special-effects-select-003-337609/
+    Click on character in menu: https://pixabay.com/sound-effects/film-special-effects-menu-selection-102220/
+    Enemy attack: https://pixabay.com/sound-effects/film-special-effects-punch-h-05-224063/
+    Sprite attack: https://pixabay.com/sound-effects/film-special-effects-small-monster-attack-195712/
+    Friend heal: https://pixabay.com/sound-effects/film-special-effects-holy-healing-spell-533279/
+    Key collect: https://pixabay.com/sound-effects/film-special-effects-key-collect-sfx-522219/
+    Portal: https://pixabay.com/sound-effects/film-special-effects-teleport-game-sound-effect-379236/
+    Move: https://pixabay.com/sound-effects/film-special-effects-st3-footstep-sfx-323056/
+    Coin collect: https://soundfxcenter.com/video-games/super-mario-bros/8d82b5_Super_Mario_Bros_Coin_Sound_Effect.mp3
+    Background music: https://dn710005.ca.archive.org/0/items/syro-flac/05.%20Aphex%20Twin%20-%20180db_%20%5B130%5D.mp3
+
+"""
+
 # ── Assets ───────────────────────────────────────────────────────────
 char       = py.transform.scale(py.image.load("mainChar.png"),      (50, 50))
 obstacle   = py.transform.scale(py.image.load("wall.jpg"),          (60, 60))
@@ -100,7 +133,6 @@ keyImg     = py.transform.scale(py.image.load("key.png"),           (40, 40))
 portalImg  = py.transform.scale(py.image.load("portal.png"),        (60, 60))
 healSound= py.mixer.Sound("healSound.mp3")
 keySound=py.mixer.Sound("keysound.mp3")
-# menuSound=py.mixer.music("menuSound.mp3")
 
 ovrSound=py.mixer.Sound("ovrSound.mp3")
 
