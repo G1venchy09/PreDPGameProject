@@ -14,10 +14,6 @@ class Player:
     def __init__(self, x:int, y:int, w:int, h:int, img):
         self.x = x
         self.y = y
-        self.w = w
-        self.h = h
-        self.rect = (self.x, self.y, self.w, self.h)
-        self.collide = False
         self.img = img
 
     def draw(self, screen):
