@@ -153,7 +153,7 @@ char_names  = ["Knight", "Rogue", "Mage"]
 selected_char = 0 
 
 # ── Objects ──────────────────────────────────────────────────────────
-p1 = Player(0, 0, char)
+p1 = Player(0, 0,char)
 
 sprite              = Sprite(0, 0, spriteImg)    # starts at hero spawn
 sprite_just_hit     = False                      # true right after collision
@@ -351,18 +351,19 @@ def find(coin,event):
 def check_sprite(hp):
     global sprite_just_hit, sprite_move_timer
 
+
+    player_row = p1.y // 60
+    player_col = p1.x // 60
+
     if not sprite.active:
         # Activate once player is 2 tiles away from spawn (0,0)
-        player_row = p1.y // 60
-        player_col = p1.x // 60
         distance = abs(player_row - 0) + abs(player_col - 0)
         if distance >= 2:
             sprite.active = True
             print("The sprite awakens!")
         return hp
 
-    player_row = p1.y // 60
-    player_col = p1.x // 60
+    
 
     # Check collision
     if sprite.grid_row == player_row and sprite.grid_col == player_col:
@@ -454,7 +455,7 @@ def check_enemy_trap(hp, has_key, portal_open,event):
             py.mixer.music.stop()
             vicSound.play()
             print("You escaped the dungeon!")
-            return hp, has_key, portal_open    # ← return immediately
+            return hp, has_key, portal_open    
         else:
             print("Entering portal… loading next room!")
             load_next_room()
@@ -595,7 +596,6 @@ def load_next_room():
     sprite_just_hit   = False
     sprite_move_timer = 0
 
-    global enemy
     enemy  = Enemy(ENEMY_ROW, ENEMY_COL, enemyImg)
     p1.x, p1.y = 0, 0
     print(f"=== ROOM {current_room + 1} LOADED ===")
@@ -620,7 +620,6 @@ def restart_game():
     current_room        = 0
     background          = backgrounds[0]
     friend              = None
-    game_over=False
     selected_char       = 0
     py.mixer.music.stop()
     game_state          = "select"
@@ -649,12 +648,6 @@ def restart_game():
         (row - 1, col - 1),            # portal
     ]
 
-    if current_room == 1:
-        important_tiles += [
-            (row - 1, 0),              # friend
-            (row - 1, 1),              # right of friend
-            (row - 2, 0),              # above friend
-        ]
 
     for (tr, tc) in important_tiles:
         if 0 <= tr < row and 0 <= tc < col:
