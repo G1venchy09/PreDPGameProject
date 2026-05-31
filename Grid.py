@@ -41,12 +41,12 @@ important_tiles = [
     (row - 1, col - 1),            # portal
 ]
 
-if False:
-    important_tiles += [
-        (row - 1, 0),              # friend
-        (row - 1, 1),              # right of friend
-        (row - 2, 0),              # above friend
-    ]
+# if False:
+#     important_tiles += [
+#         (row - 1, 0),              # friend
+#         (row - 1, 1),              # right of friend
+#         (row - 2, 0),              # above friend
+#     ]
 
 for (tr, tc) in important_tiles:
     if 0 <= tr < row and 0 <= tc < col:
@@ -773,11 +773,6 @@ while run:
         if victory and game_state == "playing":
             draw_victory()
             
-
-        # Safety net — never draw game over or victory outside playing state
-        if game_state != "playing":
-            victory   = False
-            game_over = False
             
 
 
