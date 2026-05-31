@@ -1,5 +1,4 @@
 import pygame as py
-from random import randint
 from collections import deque
 py.mixer.init()
 
