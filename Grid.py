@@ -158,7 +158,7 @@ p1 = Player(0, 0,char)
 sprite              = Sprite(0, 0, spriteImg)    # starts at hero spawn
 sprite_just_hit     = False                      # true right after collision
 sprite_move_timer   = 0                          # controls sprite movement speed
-SPRITE_MOVE_DELAY   = 7                         # frames between each sprite step
+SPRITE_MOVE_DELAY   = 4                         # frames between each sprite step
 
 
 obstacleList = []
