@@ -10,7 +10,7 @@ moveSound.set_volume(0.1)
 class Player:
     
 
-    def __init__(self, x:int, y:int, w:int, h:int, img):
+    def __init__(self, x:int, y:int, img):
         self.x = x
         self.y = y
         self.img = img
